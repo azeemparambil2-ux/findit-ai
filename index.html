@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FindIt AI — Lost & Found</title>
+<meta name="description" content="A friendly lost and found board with possible-match suggestions.">
+<style>
+:root{--navy:#101a35;--navy2:#17264b;--cyan:#28d7e5;--ink:#18233d;--muted:#68748b;--bg:#f4f7fb;--line:#e1e7f0;--white:#fff;--green:#087f68}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}.top{background:linear-gradient(120deg,var(--navy),#20396a);color:white;padding:18px max(20px,calc((100% - 1120px)/2));display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:10px;font-size:1.25rem;font-weight:800;letter-spacing:-.03em}.logo{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:var(--cyan);color:var(--navy);font-weight:900}.brand span{color:var(--cyan)}.top small{color:#d5e1ff}.wrap{max-width:1120px;margin:auto;padding:26px 20px 60px}.hero{border-radius:24px;background:radial-gradient(circle at 90% 20%,#2a5d82 0,transparent 35%),linear-gradient(125deg,#101a35,#20396a);padding:42px;color:white;display:grid;grid-template-columns:1.4fr .6fr;gap:20px;align-items:center;box-shadow:0 14px 40px #14254c20}.eyebrow{color:var(--cyan);font-weight:800;text-transform:uppercase;font-size:.75rem;letter-spacing:.13em}.hero h1{font-size:clamp(2rem,5vw,3.6rem);line-height:1.05;margin:12px 0}.hero p{color:#d5e1f7;max-width:600px;line-height:1.7}.hero-art{font-size:7rem;text-align:center;filter:drop-shadow(0 10px 20px #0004)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.btn{border:0;border-radius:12px;padding:12px 17px;font-weight:750;transition:.15s}.btn:focus,input:focus,select:focus,textarea:focus{outline:3px solid #28d7e555;outline-offset:2px}.primary{background:var(--cyan);color:var(--navy)}.secondary{background:white;color:var(--navy)}.outline{background:transparent;border:1px solid #c9d4e5;color:inherit}.tabs{display:flex;gap:8px;margin:26px 0 18px;flex-wrap:wrap}.tab{border:1px solid var(--line);background:white;color:var(--muted);padding:10px 16px;border-radius:999px;font-weight:750}.tab.active{background:var(--navy);color:white;border-color:var(--navy)}.section-head{display:flex;justify-content:space-between;align-items:end;gap:14px;margin:28px 0 14px}.section-head h2{margin:0;font-size:1.45rem}.section-head p{margin:6px 0 0;color:var(--muted);font-size:.92rem}.searchbar{display:flex;gap:10px;margin:14px 0 18px}.searchbar input{flex:1}.field input,.field select,.field textarea,.searchbar input{width:100%;border:1px solid var(--line);border-radius:11px;padding:12px;background:white;color:var(--ink)}.field textarea{min-height:90px;resize:vertical}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.card{background:white;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 5px 18px #17264b08}.photo{height:180px;background:linear-gradient(135deg,#e6edf7,#f8fbff);display:grid;place-items:center;color:#8795ad;font-size:3rem;overflow:hidden}.photo img{width:100%;height:100%;object-fit:cover}.cardbody{padding:16px}.meta{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}.pill{font-size:.72rem;font-weight:800;border-radius:999px;padding:5px 8px;background:#edf2fa;color:#53617b}.pill.lost{background:#fff0e8;color:#a84b18}.pill.found{background:#e5f8f2;color:#087f68}.card h3{margin:0 0 7px;font-size:1.08rem}.card p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.5}.details{display:flex;gap:12px;flex-wrap:wrap;color:#53617b;font-size:.8rem;margin:12px 0}.card-actions{display:flex;gap:8px;margin-top:12px}.smallbtn{padding:9px 11px;border-radius:9px;border:1px solid var(--line);background:white;font-weight:700;font-size:.82rem;color:var(--navy)}.match-score{color:var(--green);font-weight:850}.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:22px;margin:20px 0}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field{display:flex;flex-direction:column;gap:7px}.field label{font-size:.85rem;font-weight:750}.field.full{grid-column:1/-1}.hint{color:var(--muted);font-size:.8rem;line-height:1.5}.preview{display:flex;gap:12px;align-items:center;margin-top:10px}.preview img{width:90px;height:70px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}.notice{background:#fff8dc;border:1px solid #f2df9c;color:#715b16;padding:13px 15px;border-radius:12px;font-size:.86rem;line-height:1.55;margin:18px 0}.empty{grid-column:1/-1;background:white;border:1px dashed #cad4e4;border-radius:18px;padding:32px;text-align:center;color:var(--muted)}.footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:34px;line-height:1.6}.hidden{display:none!important}.matchrow{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);padding:12px;border-radius:12px;margin-top:10px}.matchrow img{width:64px;height:56px;object-fit:cover;border-radius:8px}.matchrow .noimg{width:64px;height:56px;border-radius:8px;background:#edf2fa;display:grid;place-items:center;font-size:1.5rem}.matchrow h4{margin:0 0 5px}.matchrow p{margin:0;color:var(--muted);font-size:.84rem}.status{font-size:.75rem;color:var(--muted)}
+@media(max-width:760px){.hero{grid-template-columns:1fr;padding:28px}.hero-art{display:none}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.top{padding:15px 18px}.formgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.matchrow{grid-template-columns:52px 1fr}.matchrow .scorebox{grid-column:2}.matchrow img,.matchrow .noimg{width:52px;height:48px}}
+@media(max-width:480px){.grid{grid-template-columns:1fr}.searchbar{flex-direction:column}.section-head{align-items:start;flex-direction:column}.hero h1{font-size:2.35rem}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><div class="logo">F</div><div>FindIt <span>AI</span></div></div>
+  <small>Lost something? Let's find it.</small>
+</header>
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <div class="eyebrow">Community-powered recovery</div>
+      <h1>Lost it.<br>Found it.<br><span style="color:var(--cyan)">FindIt.</span></h1>
+      <p>A simple place to report lost belongings, share things you've found, and discover possible matches with helpful clues.</p>
+      <div class="actions">
+        <button class="btn primary" onclick="openForm('lost')">＋ Report a lost item</button>
+        <button class="btn secondary" onclick="openForm('found')">＋ Report a found item</button>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">🔎 🎒</div>
+  </section>
+
+  <div class="notice"><strong>Prototype notice:</strong> This first version stores reports only in this browser. Other visitors will not see your reports yet. Matching is a basic demo score, not real AI or proof of ownership. We'll connect shared storage and secure AI services in later steps.</div>
+
+  <section class="section-head">
+    <div><h2>Explore reports</h2><p>Search by item, description, category, or location.</p></div>
+    <div class="status" id="countLabel">0 reports</div>
+  </section>
+  <div class="searchbar">
+    <input id="searchInput" type="search" placeholder="Try “black wallet” or “college gate”" aria-label="Search reports" oninput="renderItems()">
+    <select id="categoryFilter" aria-label="Filter by category" onchange="renderItems()" style="max-width:220px">
+      <option value="">All categories</option><option>Electronics</option><option>Wallet / Purse</option><option>Keys</option><option>Bags</option><option>Documents</option><option>Clothing</option><option>Jewellery</option><option>Other</option>
+    </select>
+  </div>
+  <div class="tabs">
+    <button class="tab active" data-view="all" onclick="setView('all')">All reports</button>
+    <button class="tab" data-view="lost" onclick="setView('lost')">Lost items</button>
+    <button class="tab" data-view="found" onclick="setView('found')">Found items</button>
+    <button class="tab" data-view="matches" onclick="showMatches()">Possible matches</button>
+  </div>
+
+  <section id="listingSection">
+    <div id="itemGrid" class="grid"></div>
+  </section>
+  <section id="matchesSection" class="panel hidden">
+    <div class="section-head" style="margin-top:0"><div><h2>Possible matches</h2><p>Suggestions based on similar words and categories in this prototype.</p></div><button class="smallbtn" onclick="showListings()">Back to reports</button></div>
+    <div id="matchesContent"></div>
+  </section>
+
+  <section id="formSection" class="panel hidden">
+    <div class="section-head" style="margin-top:0"><div><h2 id="formTitle">Report an item</h2><p>Share enough detail to help someone recognise the item.</p></div><button class="smallbtn" onclick="closeForm()">Cancel</button></div>
+    <form id="itemForm">
+      <input type="hidden" id="itemType" value="lost">
+      <div class="formgrid">
+        <div class="field"><label for="itemName">Item name *</label><input id="itemName" required maxlength="80" placeholder="e.g. Black wallet"></div>
+        <div class="field"><label for="itemCategory">Category *</label><select id="itemCategory" required><option value="">Choose a category</option><option>Electronics</option><option>Wallet / Purse</option><option>Keys</option><option>Bags</option><option>Documents</option><option>Clothing</option><option>Jewellery</option><option>Other</option></select></div>
+        <div class="field full"><label for="itemDescription">Description *</label><textarea id="itemDescription" required maxlength="700" placeholder="Colour, brand, marks or other identifying details. Do not include private information."></textarea></div>
+        <div class="field"><label for="itemColor">Main colour</label><input id="itemColor" maxlength="40" placeholder="e.g. black"></div>
+        <div class="field"><label for="itemLocation">Location *</label><input id="itemLocation" required maxlength="120" placeholder="e.g. College library"></div>
+        <div class="field"><label for="itemDate">Date lost / found *</label><input id="itemDate" type="date" required></div>
+        <div class="field"><label for="itemPhoto">Photo (optional)</label><input id="itemPhoto" type="file" accept="image/png,image/jpeg,image/webp"><span class="hint">For this prototype, photos are saved only in this browser. Keep the image under 1 MB.</span><div id="photoPreview" class="preview hidden"></div></div>
+        <div class="field full"><label for="itemContact">Contact method (optional)</label><input id="itemContact" maxlength="100" placeholder="e.g. contact through a trusted administrator"><span class="hint">Avoid posting your phone number or home address publicly. This prototype does not provide private messaging.</span></div>
+      </div>
+      <div class="actions"><button class="btn primary" type="submit">Save report on this device</button><button class="btn outline" type="button" onclick="closeForm()">Cancel</button></div>
+    </form>
+  </section>
+  <div class="footer">FindIt AI · A community tool to help belongings find their way home.<br>Never share passwords, ID numbers, home addresses, or sensitive details in public reports.</div>
+</main>
+<script>
+const KEY='findit-ai-reports-v1';
+let view='all', pendingImage='';
+const demo=[
+{id:'demo1',type:'lost',name:'Black wallet',category:'Wallet / Purse',description:'Small black leather wallet with a stitched edge. A few cards inside.',color:'Black',location:'College library',date:'2026-10-22',photo:'',contact:'',demo:true},
+{id:'demo2',type:'found',name:'Dark leather wallet',category:'Wallet / Purse',description:'Found a dark wallet near the library entrance. No cash visible.',color:'Black',location:'College library entrance',date:'2026-10-22',photo:'',contact:'',demo:true},
+{id:'demo3',type:'lost',name:'Wireless earbuds case',category:'Electronics',description:'White charging case for wireless earbuds, small scratch on lid.',color:'White',location:'Bus station',date:'2026-10-20',photo:'',contact:'',demo:true},
+{id:'demo4',type:'found',name:'White earbuds case',category:'Electronics',description:'Found a white earbuds charging case on a bus seat.',color:'White',location:'Bus station',date:'2026-10-20',photo:'',contact:'',demo:true},
+{id:'demo5',type:'found',name:'Blue school bag',category:'Bags',description:'Blue backpack found beside the sports ground.',color:'Blue',location:'Sports ground',date:'2026-10-19',photo:'',contact:'',demo:true}
+];
+function loadReports(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
+function saveReports(arr){try{localStorage.setItem(KEY,JSON.stringify(arr));return true}catch(e){alert('Could not save this report. The photo may be too large. Try a smaller image.');return false}}
+function allReports(){return [...loadReports(),...demo]}
+function safe(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function openForm(type){document.getElementById('formSection').classList.remove('hidden');document.getElementById('matchesSection').classList.add('hidden');document.getElementById('listingSection').classList.remove('hidden');document.getElementById('itemType').value=type;document.getElementById('formTitle').textContent=type==='lost'?'Report a lost item':'Report a found item';document.getElementById('itemDate').value=new Date().toISOString().slice(0,10);document.getElementById('formSection').scrollIntoView({behavior:'smooth',block:'start'})}
+function closeForm(){document.getElementById('formSection').classList.add('hidden');document.getElementById('itemForm').reset();pendingImage='';document.getElementById('photoPreview').classList.add('hidden')}
+function setView(v){view=v;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view===v));document.getElementById('matchesSection').classList.add('hidden');document.getElementById('listingSection').classList.remove('hidden');document.getElementById('formSection').classList.add('hidden');renderItems()}
+function showListings(){document.getElementById('matchesSection').classList.add('hidden');document.getElementById('listingSection').classList.remove('hidden')}
+function renderItems(){const q=document.getElementById('searchInput').value.toLowerCase().trim(),cat=document.getElementById('categoryFilter').value;let arr=allReports().filter(x=>(view==='all'||view==='matches'||x.type===view)&&(!cat||x.category===cat)&&(!q||[x.name,x.description,x.category,x.location,x.color].join(' ').toLowerCase().includes(q)));document.getElementById('countLabel').textContent=arr.length+' report'+(arr.length===1?'':'s');const grid=document.getElementById('itemGrid');if(!arr.length){grid.innerHTML='<div class="empty"><div style="font-size:2rem">🔎</div><h3>No reports found</h3><p>Try another search, or add a new report.</p></div>';return}grid.innerHTML=arr.map(x=>`<article class="card"><div class="photo">${x.photo?`<img src="${x.photo}" alt="Photo of ${safe(x.name)}">`:'<span>📦</span>'}</div><div class="cardbody"><div class="meta"><span class="pill ${x.type}">${x.type==='lost'?'LOST':'FOUND'}</span><span class="pill">${safe(x.category)}</span>${x.demo?'<span class="pill">DEMO</span>':''}</div><h3>${safe(x.name)}</h3><p>${safe(x.description)}</p><div class="details"><span>📍 ${safe(x.location)}</span><span>📅 ${safe(x.date)}</span></div><div class="card-actions"><button class="smallbtn" onclick="findMatches('${safe(x.id)}')">Find possible matches</button></div></div></article>`).join('')}
+function score(a,b){if(a.type===b.type)return 0;let s=0, reasons=[];const textA=(a.name+' '+a.description+' '+a.color+' '+a.category).toLowerCase(),textB=(b.name+' '+b.description+' '+b.color+' '+b.category).toLowerCase();const words=t=>new Set(t.split(/[^a-z0-9]+/).filter(w=>w.length>2));const wa=words(textA),wb=words(textB);let common=[...wa].filter(w=>wb.has(w));let sim=common.length/Math.max(1,new Set([...wa,...wb]).size);s+=sim*45;if(sim>.15)reasons.push('similar description words');if(a.category===b.category){s+=25;reasons.push('same category')}if(a.color&&b.color&&a.color.toLowerCase()===b.color.toLowerCase()){s+=15;reasons.push('same colour')}const locA=(a.location||'').toLowerCase(),locB=(b.location||'').toLowerCase();if(locA&&locB&&(locA.includes(locB)||locB.includes(locA)||locA.split(/\s+/).some(w=>w.length>3&&locB.includes(w)))){s+=15;reasons.push('similar location')}return {score:Math.min(99,Math.round(s)),reasons}}
+function showMatches(){view='matches';document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view==='matches'));document.getElementById('listingSection').classList.add('hidden');document.getElementById('formSection').classList.add('hidden');document.getElementById('matchesSection').classList.remove('hidden');let reports=allReports(), pairs=[];for(const a of reports)for(const b of reports){if(a.id<b.id&&a.type!==b.type){const m=score(a,b);if(m.score>=20)pairs.push({a,b,...m})}}pairs.sort((x,y)=>y.score-x.score);const out=document.getElementById('matchesContent');if(!pairs.length){out.innerHTML='<div class="empty">No possible matches yet. Add both lost and found reports to compare them.</div>';return}out.innerHTML=pairs.map(p=>`<div class="matchrow">${p.a.photo?`<img src="${p.a.photo}" alt="">`:'<div class="noimg">🔎</div>'}<div><h4>${safe(p.a.name)} ↔ ${safe(p.b.name)}</h4><p>${safe(p.a.type)} · ${safe(p.a.location)} &nbsp;|&nbsp; ${safe(p.b.type)} · ${safe(p.b.location)}<br>${safe(p.reasons.join(' • ')||'Some details overlap')}</p></div><div class="scorebox"><div class="match-score">${p.score}% demo score</div><span class="status">Not AI-verified</span></div></div>`).join('')+'<p class="hint" style="margin-top:14px">These scores use basic word, category, colour and location overlap. They are not AI predictions and do not verify ownership. Photo similarity is not implemented in this first version.</p>'}
+function findMatches(id){showMatches();const reports=allReports();const target=reports.find(x=>x.id===id);if(!target)return;const candidates=reports.filter(x=>x.id!==id&&x.type!==target.type).map(x=>({x,...score(target,x)})).sort((a,b)=>b.score-a.score);const out=document.getElementById('matchesContent');out.innerHTML=`<h3>Matches for: ${safe(target.name)}</h3>`+(candidates.length?candidates.map(p=>`<div class="matchrow">${p.x.photo?`<img src="${p.x.photo}" alt="">`:'<div class="noimg">📦</div>'}<div><h4>${safe(p.x.name)}</h4><p>${safe(p.x.type)} · ${safe(p.x.location)}<br>${safe(p.reasons.join(' • ')||'Limited details overlap')}</p></div><div class="scorebox"><div class="match-score">${p.score}% demo score</div></div></div>`).join(''):'<p>No opposite-type reports to compare yet.')+'<p class="hint" style="margin-top:14px">Demo scores only. Reports are stored in this browser, and photos are not analysed by AI yet.</p>'}
+document.getElementById('itemPhoto').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];pendingImage='';const p=document.getElementById('photoPreview');if(!f){p.classList.add('hidden');return}if(!/^image\/(png|jpeg|webp)$/.test(f.type)){alert('Please choose a JPG, PNG or WebP image.');e.target.value='';return}if(f.size>1024*1024){alert('Please choose an image smaller than 1 MB for this demo.');e.target.value='';return}const r=new FileReader();r.onload=()=>{pendingImage=r.result;p.innerHTML=`<img src="${pendingImage}" alt="Selected photo preview"><span class="hint">Photo ready to save on this device.</span>`;p.classList.remove('hidden')};r.readAsDataURL(f)});
+document.getElementById('itemForm').addEventListener('submit',e=>{e.preventDefault();const item={id:'user-'+Date.now(),type:document.getElementById('itemType').value,name:document.getElementById('itemName').value.trim(),category:document.getElementById('itemCategory').value,description:document.getElementById('itemDescription').value.trim(),color:document.getElementById('itemColor').value.trim(),location:document.getElementById('itemLocation').value.trim(),date:document.getElementById('itemDate').value,photo:pendingImage,contact:document.getElementById('itemContact').value.trim(),demo:false};const arr=loadReports();arr.unshift(item);if(saveReports(arr)){closeForm();view='all';document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view==='all'));renderItems();alert('Report saved on this browser. It is not public yet.');window.scrollTo({top:document.getElementById('listingSection').offsetTop,behavior:'smooth'})}});
+renderItems();
+</script>
+</body>
+</html>
