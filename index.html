@@ -80,8 +80,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* STEP 3: Replace both placeholders with your Supabase Project URL and publishable key. */
-const SUPABASE_URL = "sb_publishable_8MjjyuCdfwQJQiRKQf00RQ_ZT7IxvR1";
-const SUPABASE_PUBLISHABLE_KEY = "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
+const SUPABASE_URL = "https://rbtofcnjoqgctobunjit.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_8MjjyuCdfwQJQiRKQf00RQ_ZT7IxvR1";
 const supabaseConfigured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("PASTE_") && !SUPABASE_PUBLISHABLE_KEY.includes("PASTE_");
 const supabaseClient = supabaseConfigured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
 let sharedReports = [];
