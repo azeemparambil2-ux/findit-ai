@@ -31,7 +31,7 @@
     <div class="hero-art" aria-hidden="true">🔎 🎒</div>
   </section>
 
-  <div class="notice"><strong>Prototype notice:</strong> This first version stores reports only in this browser. Other visitors will not see your reports yet. Matching is a basic demo score, not real AI or proof of ownership. We'll connect shared storage and secure AI services in later steps.</div>
+  <div class="notice" id="connectionNotice"><strong>Setup needed:</strong> Add your Supabase Project URL and publishable key, and create the reports table using the setup instructions. Until then, shared reports are not connected. Matching is a basic demo score, not real AI or proof of ownership.</div>
 
   <section class="section-head">
     <div><h2>Explore reports</h2><p>Search by item, description, category, or location.</p></div>
@@ -69,15 +69,30 @@
         <div class="field"><label for="itemColor">Main colour</label><input id="itemColor" maxlength="40" placeholder="e.g. black"></div>
         <div class="field"><label for="itemLocation">Location *</label><input id="itemLocation" required maxlength="120" placeholder="e.g. College library"></div>
         <div class="field"><label for="itemDate">Date lost / found *</label><input id="itemDate" type="date" required></div>
-        <div class="field"><label for="itemPhoto">Photo (optional)</label><input id="itemPhoto" type="file" accept="image/png,image/jpeg,image/webp"><span class="hint">For this prototype, photos are saved only in this browser. Keep the image under 1 MB.</span><div id="photoPreview" class="preview hidden"></div></div>
-        <div class="field full"><label for="itemContact">Contact method (optional)</label><input id="itemContact" maxlength="100" placeholder="e.g. contact through a trusted administrator"><span class="hint">Avoid posting your phone number or home address publicly. This prototype does not provide private messaging.</span></div>
+        <div class="field"><label for="itemPhoto">Photo (optional)</label><input id="itemPhoto" type="file" accept="image/png,image/jpeg,image/webp"><span class="hint">Photo sharing will be enabled after Storage is configured. For now, reports share text details only.</span><div id="photoPreview" class="preview hidden"></div></div>
+        <div class="field full"><label for="itemContact">Contact method (optional)</label><input id="itemContact" maxlength="100" placeholder="e.g. contact through a trusted administrator"><span class="hint">This first shared version does not publish contact details. Avoid posting phone numbers or home addresses in descriptions.</span></div>
       </div>
       <div class="actions"><button class="btn primary" type="submit">Save report on this device</button><button class="btn outline" type="button" onclick="closeForm()">Cancel</button></div>
     </form>
   </section>
   <div class="footer">FindIt AI · A community tool to help belongings find their way home.<br>Never share passwords, ID numbers, home addresses, or sensitive details in public reports.</div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* STEP 3: Replace both placeholders with your Supabase Project URL and publishable key. */
+const SUPABASE_URL = "sb_publishable_8MjjyuCdfwQJQiRKQf00RQ_ZT7IxvR1";
+const SUPABASE_PUBLISHABLE_KEY = "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
+const supabaseConfigured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("PASTE_") && !SUPABASE_PUBLISHABLE_KEY.includes("PASTE_");
+const supabaseClient = supabaseConfigured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
+let sharedReports = [];
+function fromDatabase(row){ return {id:row.id, type:row.report_type, name:row.item_name, category:row.category, description:row.description||"", color:row.color||"", location:row.location, date:row.item_date||"", photo:row.photo_url||"", contact:"", demo:false, shared:true}; }
+async function loadSharedReports(){
+  if(!supabaseClient){ renderItems(); return; }
+  const {data,error}=await supabaseClient.from("reports").select("*").order("created_at",{ascending:false}).limit(500);
+  if(error){ console.error("Supabase load error:",error); document.getElementById("connectionNotice").textContent="Database connection issue: "+error.message; }
+  else { sharedReports=(data||[]).map(fromDatabase); document.getElementById("connectionNotice").textContent="Connected: shared reports are loaded from the community database."; }
+  renderItems();
+}
 const KEY='findit-ai-reports-v1';
 let view='all', pendingImage='';
 const demo=[
@@ -89,7 +104,7 @@ const demo=[
 ];
 function loadReports(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
 function saveReports(arr){try{localStorage.setItem(KEY,JSON.stringify(arr));return true}catch(e){alert('Could not save this report. The photo may be too large. Try a smaller image.');return false}}
-function allReports(){return [...loadReports(),...demo]}
+function allReports(){return [...sharedReports,...loadReports(),...demo]}
 function safe(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function openForm(type){document.getElementById('formSection').classList.remove('hidden');document.getElementById('matchesSection').classList.add('hidden');document.getElementById('listingSection').classList.remove('hidden');document.getElementById('itemType').value=type;document.getElementById('formTitle').textContent=type==='lost'?'Report a lost item':'Report a found item';document.getElementById('itemDate').value=new Date().toISOString().slice(0,10);document.getElementById('formSection').scrollIntoView({behavior:'smooth',block:'start'})}
 function closeForm(){document.getElementById('formSection').classList.add('hidden');document.getElementById('itemForm').reset();pendingImage='';document.getElementById('photoPreview').classList.add('hidden')}
@@ -100,8 +115,20 @@ function score(a,b){if(a.type===b.type)return 0;let s=0, reasons=[];const textA=
 function showMatches(){view='matches';document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view==='matches'));document.getElementById('listingSection').classList.add('hidden');document.getElementById('formSection').classList.add('hidden');document.getElementById('matchesSection').classList.remove('hidden');let reports=allReports(), pairs=[];for(const a of reports)for(const b of reports){if(a.id<b.id&&a.type!==b.type){const m=score(a,b);if(m.score>=20)pairs.push({a,b,...m})}}pairs.sort((x,y)=>y.score-x.score);const out=document.getElementById('matchesContent');if(!pairs.length){out.innerHTML='<div class="empty">No possible matches yet. Add both lost and found reports to compare them.</div>';return}out.innerHTML=pairs.map(p=>`<div class="matchrow">${p.a.photo?`<img src="${p.a.photo}" alt="">`:'<div class="noimg">🔎</div>'}<div><h4>${safe(p.a.name)} ↔ ${safe(p.b.name)}</h4><p>${safe(p.a.type)} · ${safe(p.a.location)} &nbsp;|&nbsp; ${safe(p.b.type)} · ${safe(p.b.location)}<br>${safe(p.reasons.join(' • ')||'Some details overlap')}</p></div><div class="scorebox"><div class="match-score">${p.score}% demo score</div><span class="status">Not AI-verified</span></div></div>`).join('')+'<p class="hint" style="margin-top:14px">These scores use basic word, category, colour and location overlap. They are not AI predictions and do not verify ownership. Photo similarity is not implemented in this first version.</p>'}
 function findMatches(id){showMatches();const reports=allReports();const target=reports.find(x=>x.id===id);if(!target)return;const candidates=reports.filter(x=>x.id!==id&&x.type!==target.type).map(x=>({x,...score(target,x)})).sort((a,b)=>b.score-a.score);const out=document.getElementById('matchesContent');out.innerHTML=`<h3>Matches for: ${safe(target.name)}</h3>`+(candidates.length?candidates.map(p=>`<div class="matchrow">${p.x.photo?`<img src="${p.x.photo}" alt="">`:'<div class="noimg">📦</div>'}<div><h4>${safe(p.x.name)}</h4><p>${safe(p.x.type)} · ${safe(p.x.location)}<br>${safe(p.reasons.join(' • ')||'Limited details overlap')}</p></div><div class="scorebox"><div class="match-score">${p.score}% demo score</div></div></div>`).join(''):'<p>No opposite-type reports to compare yet.')+'<p class="hint" style="margin-top:14px">Demo scores only. Reports are stored in this browser, and photos are not analysed by AI yet.</p>'}
 document.getElementById('itemPhoto').addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];pendingImage='';const p=document.getElementById('photoPreview');if(!f){p.classList.add('hidden');return}if(!/^image\/(png|jpeg|webp)$/.test(f.type)){alert('Please choose a JPG, PNG or WebP image.');e.target.value='';return}if(f.size>1024*1024){alert('Please choose an image smaller than 1 MB for this demo.');e.target.value='';return}const r=new FileReader();r.onload=()=>{pendingImage=r.result;p.innerHTML=`<img src="${pendingImage}" alt="Selected photo preview"><span class="hint">Photo ready to save on this device.</span>`;p.classList.remove('hidden')};r.readAsDataURL(f)});
-document.getElementById('itemForm').addEventListener('submit',e=>{e.preventDefault();const item={id:'user-'+Date.now(),type:document.getElementById('itemType').value,name:document.getElementById('itemName').value.trim(),category:document.getElementById('itemCategory').value,description:document.getElementById('itemDescription').value.trim(),color:document.getElementById('itemColor').value.trim(),location:document.getElementById('itemLocation').value.trim(),date:document.getElementById('itemDate').value,photo:pendingImage,contact:document.getElementById('itemContact').value.trim(),demo:false};const arr=loadReports();arr.unshift(item);if(saveReports(arr)){closeForm();view='all';document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view==='all'));renderItems();alert('Report saved on this browser. It is not public yet.');window.scrollTo({top:document.getElementById('listingSection').offsetTop,behavior:'smooth'})}});
-renderItems();
+document.getElementById('itemForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ if(!supabaseClient){alert('Supabase is not configured yet. Add your Project URL and publishable key to index.html, and create the reports table first.');return;}
+ const item={report_type:document.getElementById('itemType').value,item_name:document.getElementById('itemName').value.trim(),category:document.getElementById('itemCategory').value,description:document.getElementById('itemDescription').value.trim(),color:document.getElementById('itemColor').value.trim(),location:document.getElementById('itemLocation').value.trim(),item_date:document.getElementById('itemDate').value||null};
+ const submitButton=document.querySelector('#itemForm button[type="submit"]'); submitButton.disabled=true; submitButton.textContent='Submitting…';
+ const {data,error}=await supabaseClient.from('reports').insert(item).select().single();
+ submitButton.disabled=false; submitButton.textContent='Share report';
+ if(error){console.error('Supabase insert error:',error);alert('Could not share report: '+error.message+'\nCheck the SQL table, policies, Project URL and publishable key.');return;}
+ sharedReports.unshift(fromDatabase(data));
+ if(pendingImage) alert('Your report was shared. Photo storage is not connected yet, so the selected photo was not uploaded.');
+ closeForm();view='all';document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view==='all'));renderItems();alert('Report shared successfully with all FindIt AI visitors!');window.scrollTo({top:document.getElementById('listingSection').offsetTop,behavior:'smooth'});
+});
+const submitReportButton=document.querySelector('#itemForm button[type="submit"]'); if(submitReportButton) submitReportButton.textContent='Share report';
+loadSharedReports();
 </script>
 </body>
 </html>
